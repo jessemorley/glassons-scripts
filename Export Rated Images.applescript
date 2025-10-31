@@ -4,8 +4,8 @@ GLASSONS EXPORT RATED IMAGES SCRIPT v1.2
 ================================================================================
 
 PURPOSE:
-This script exports rated images (1-5 stars) from Capture One to JPGs and uploads them to
-the Glassons Ecom system. It handles conflict resolution when re-running with
+This script exports rated images (1-5 stars) from Capture One to JPGs for the
+Glassons Ecom system. It handles conflict resolution when re-running with
 different selections by renaming previously unrated images, ensuring clean
 exports without filename conflicts.
 
@@ -15,18 +15,9 @@ WORKFLOW:
 3. Rename conflicting unrated images with "_prev" suffix
 4. Configure export recipe (Glassons Ecom Recipe)
 5. Batch rename rated images to SKU_COUNTER format
-6. Export rated images as JPGs
-7. Upload images via shell script
+6. Export rated images as JPGs (overwrites existing files)
 
 RECOMMENDED SHORTCUT: Command + 6
-
-CHANGELOG:
-v1.2 -Added user-defined exportOutputFolder property
-v1.1 - Added support for all RAW file formats (CR3, NEF, eip, etc.)
-     - Changed rating filter from 1-star only to 1-5 stars
-     - Simplified file format detection logic
-     - Reduced batch rename wait time from 10s to 1s
-v1.0 - Original script functionality
 
 AUTHOR: Jesse Morley
 DATE: October 2025
@@ -45,43 +36,12 @@ property exportOutputFolder : "/Users/jmorley/Pictures/ProductImages"
 -- The folder where exported JPG images will be saved
 -- Glassons: "Volumes/ProductImages"
 
-
--- ============================================================================
--- GLOBAL VARIABLES
--- ============================================================================
-
-global currentPath
--- Stores the path where this script is running from (used to invoke upload shell script)
-
-
--- ============================================================================
--- FUNCTION: Get Output Folder Path from Captures Path
--- ============================================================================
-(*
-Converts a capture folder path to its corresponding output folder path.
-The output folder is located at the same level as the session's capture structure.
-
-EXAMPLE:
-Input:  /path/to/session/Capture/SKU123
-Output: /path/to/session/Output
-*)
-on getOutputFolderPathFromCapturesPath(capturesFolderPath)
-	-- Extract the session folder path (parent of capture folder)
-	set sessionPath to do shell script ("dirname \"" & capturesFolderPath & "\"")
-	set sessionParentPath to do shell script ("dirname \"" & sessionPath & "\"")
-	-- Return the Output folder within the same session structure
-	return sessionParentPath & "/Output"
-end getOutputFolderPathFromCapturesPath
-
-
 -- ============================================================================
 -- FUNCTION: Check for Image Files
 -- ============================================================================
-(*
-Checks if a folder contains any image files.
-Works with any format supported by Capture One.
-Returns true if image files exist, false otherwise.
-*)
+
+
+-- Check if a folder contains any image files.
 on hasImageFiles(folderPath)
 	-- Count all common RAW and image formats
 	set imageCount to do shell script ("find \"" & folderPath & "\" -type f \\( -iname \"*.CR3\" -o -iname \"*.NEF\" -o -iname \"*.eip\" -o -iname \"*.ARW\" -o -iname \"*.RAF\" -o -iname \"*.ORF\" -o -iname \"*.DNG\" -o -iname \"*.TIF\" -o -iname \"*.TIFF\" \\) | wc -l | bc")
@@ -96,12 +56,6 @@ end hasImageFiles
 Renames unrated images that would conflict with the new batch rename pattern.
 This prevents the " 1" appendage issue when re-running the script with different
 selections. Uses Capture One's batch rename to preserve catalog references.
-
-PROCESS:
-1. Generate expected new filenames (SKU_1.xxx, SKU_2.xxx, etc.)
-2. Check if each expected filename already exists
-3. For existing files, check if they are currently rated (1-5 stars)
-4. If unrated, rename with "_prev" suffix using Capture One's batch rename
 *)
 on renameUnstarredMatchingImages(capturesFolderPath, sku, ratedImagesCount)
 	-- Check if image files exist
@@ -162,7 +116,6 @@ on renameUnstarredMatchingImages(capturesFolderPath, sku, ratedImagesCount)
 					end tell
 				on error errMsg
 					-- If Capture One rename fails, log the error but continue
-					-- We'll let the user know if there are issues
 				end try
 			end if
 		end if
@@ -173,11 +126,6 @@ end renameUnstarredMatchingImages
 -- ============================================================================
 -- MAIN SCRIPT EXECUTION - PART 1: VALIDATION AND SETUP
 -- ============================================================================
-
--- Get the path of where this script is running from (needed to invoke the shell script)
-tell application "Finder"
-	set currentPath to (the POSIX path of (container of (path to me) as alias))
-end tell
 
 tell application "Capture One"
 	-- Validate only one session is open
@@ -238,21 +186,13 @@ end tell
 
 
 -- ============================================================================
--- MAIN SCRIPT EXECUTION - PART 2: RENAME, EXPORT, AND UPLOAD
+-- MAIN SCRIPT EXECUTION - PART 2: RENAME AND EXPORT
 -- ============================================================================
 
 -- Bring Capture One to front
 tell application "System Events" to set frontmost of process "Capture One" to true
 
 tell application "Capture One"
-	-- Re-fetch variables for export and upload operations
-	set ratedVariants to (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
-	set selectedVariant to the path of (get parent image of (get item 1 of ratedVariants))
-	set capturesFolderPath to (do shell script "dirname \"" & selectedVariant & "\"")
-	set outputFolderPath to exportOutputFolder
-	set sku to do shell script ("basename '" & capturesFolderPath & "'")
-	set ratedImagesCount to count (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
-
 	-- Configure batch rename settings for rated images
 	tell batch rename settings of current document
 		set method to text and tokens
@@ -286,19 +226,7 @@ EOF"
 	repeat with selectedVariant in (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 		set filePath to get path of (get parent image of (get item 1 of selectedVariant))
 		process filePath recipe "Glassons Ecom Recipe"
-		-- Get base filename without extension (works for any extension)
-		set baseFileName to do shell script "basename \"" & filePath & "\" | sed 's/\\.[^.]*$//'"
-		set exportedFilePath to outputFolderPath & "/" & baseFileName & ".jpg"
 	end repeat
-
-	-- Get session path for upload script
-	set sessionPath to (the POSIX path of (get folder of front document))
-
-	-- Launch upload shell script in background
-	set uploadScript to "/bin/bash -s <<'EOF'
-  /bin/bash \"" & currentPath & "upload-select-images.sh\" " & sku & " \"" & outputFolderPath & "\" \"" & sessionPath & "\" \"" & ratedImagesCount & "\" > /dev/null 2>&1 &
-EOF"
-	do shell script uploadScript
 end tell
 
 (*
