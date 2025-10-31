@@ -4,8 +4,9 @@ GLASSONS CAPTURE ONE SCRIPTS v1.2.0
 INSTALLATION
 ------------
 
-1. Copy the .scpt files to ~/Library/Scripts/Capture One Scripts
-2. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
+1. Open each .applescript file in Script Editor
+2. Compile and save each script as a .scpt file to ~/Library/Scripts/Capture One Scripts
+3. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
 
 SCRIPTS
 -------

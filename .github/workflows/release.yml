@@ -23,8 +23,8 @@ jobs:
 
       - name: Create ZIP archive
         run: |
-          cd compiled
-          zip ../glassons-scripts.zip *.scpt
+          cd applescripts
+          zip ../glassons-scripts.zip *.applescript
           cd ..
           zip -u glassons-scripts.zip README.txt
 
