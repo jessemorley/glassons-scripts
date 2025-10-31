@@ -2,6 +2,19 @@
 
 All notable changes to the Glassons Scripts will be documented in this file.
 
+## [1.2.3] - 2025-10-31
+
+### Rename and Export Rated Images
+
+#### Added
+- Error handling for unmounted export volume/folder with user-friendly alert message
+- ERROR HANDLING section in script documentation listing all validation checks
+
+#### Changed
+- Updated export output folder path to `/Volumes/ProductImages`
+- Simplified recipe name from "Glassons Ecom Recipe" to "Glassons Ecomm"
+- Improved error alert messages for better clarity
+
 ## [1.2.2] - 2025-10-31
 
 ### Rename and Export Rated Images

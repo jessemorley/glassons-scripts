@@ -14,9 +14,15 @@ WORKFLOW:
 1. Validate session (single document open, rated images exist)
 2. Identify capture folder and SKU from rated image location
 3. Rename conflicting unrated images with "_prev" suffix
-4. Configure export recipe (Glassons Ecom Recipe)
+4. Configure export recipe (Glassons Ecomm)
 5. Batch rename rated images to SKU_COUNTER format
 6. Export rated images as JPGs (overwrites existing files)
+
+ERROR HANDLING:
+- No images are rated
+- The ProductImages drive is not mounted
+- Multiple capture sessions are open
+- Target capture folder is not a subfolder of the session Capture folder
 
 RECOMMENDED SHORTCUT: Command + 6
 
@@ -33,9 +39,8 @@ use scripting additions
 -- CONFIGURATION
 -- ============================================================================
 
-property exportOutputFolder : "/Users/jmorley/Pictures/ProductImages"
+property exportOutputFolder : "/Volumes/ProductImages"
 -- The folder where exported JPG images will be saved
--- Glassons: "Volumes/ProductImages"
 
 -- ============================================================================
 -- FUNCTION: Check for Image Files
@@ -131,14 +136,14 @@ tell application "Capture One"
 	-- Validate only one session is open
 	set windowCount to (get count of documents)
 	if windowCount > 1 then
-		display alert "Glassons Ecom Upload Failure." message "You have more than one Capture Session open. Please close all other sessions before attempting upload."
+		display alert "Export Failure" message "You have more than one Capture Session open. Please close all other sessions before attempting upload."
 		return
 	end if
 
 	-- Validate that rated images exist
 	set ratedVariants to (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 	if ratedVariants = {} then
-		display alert "Glassons Ecom Upload Failure." message "Please ensure you have a SKU Capture folder selected, and you have images marked with 1-5 stars."
+		display alert "Export Failure" message "No selects detected. Please ensure have images marked with 1-5 stars."
 		return
 	end if
 
@@ -151,27 +156,40 @@ tell application "Capture One"
 
 	-- Validate we're in a Capture folder
 	if "Capture" is not in capturesFolderPath then
-		display alert "Glassons Ecom Upload Failure." message "Incorrect folder selected, please choose a SKU folder within the Capture folder."
+		display alert "Export Failure" message "Incorrect folder selected, please choose a SKU folder within the Capture folder."
 		return
 	end if
+
+	-- Validate that export output folder/volume is accessible
+	try
+		do shell script "test -d \"" & outputFolderPath & "\""
+	on error
+		display alert "Export Failure" message "Export destination not found:" & return & outputFolderPath & return & return & "Please ensure the volume is mounted."
+		return
+	end try
 
 	-- Rename unrated images that would conflict with new naming BEFORE any other operations
 	my renameUnstarredMatchingImages(capturesFolderPath, sku, ratedImagesCount)
 
-	-- Create output folder for export
-	do shell script ("mkdir -p \"" & outputFolderPath & "\"")
-
-	-- Set up the Glassons Ecom export recipe if not already existing
+	-- Create output folder for export (ensure it exists)
 	try
-		get recipe "Glassons Ecom Recipe" of front document
+		do shell script ("mkdir -p \"" & outputFolderPath & "\"")
+	on error errMsg
+		display alert "Export Failure" message "Could not create export folder:" & return & outputFolderPath & return & return & "Error: " & errMsg
+		return
+	end try
+
+	-- Set up the Glassons Ecomm export recipe if not already existing
+	try
+		get recipe "Glassons Ecomm" of front document
 	on error errMsg
 		tell front document
-			make new recipe with properties {name:"Glassons Ecom Recipe"}
+			make new recipe with properties {name:"Glassons Ecomm"}
 		end tell
 	end try
 
-	-- Configure export options for Glassons Ecom export recipe
-	tell recipe "Glassons Ecom Recipe" of front document
+	-- Configure export options for Glassons Ecomm export recipe
+	tell recipe "Glassons Ecomm" of front document
 		set enabled to true
 		set root folder type to custom location
 		set root folder location to POSIX file exportOutputFolder
@@ -235,7 +253,7 @@ EOF"
 	-- Export rated images to JPGs using the configured recipe (will overwrite existing files)
 	repeat with selectedVariant in (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 		set filePath to get path of (get parent image of (get item 1 of selectedVariant))
-		process filePath recipe "Glassons Ecom Recipe"
+		process filePath recipe "Glassons Ecomm"
 	end repeat
 end tell
 
