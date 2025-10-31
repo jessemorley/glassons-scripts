@@ -47,6 +47,14 @@ use scripting additions
 
 
 -- ============================================================================
+-- CONFIGURATION
+-- ============================================================================
+
+property exportOutputFolder : "/Users/jmorley/Pictures/ProductImages"
+-- The folder where exported JPG images will be saved
+
+
+-- ============================================================================
 -- GLOBAL VARIABLES
 -- ============================================================================
 
@@ -197,7 +205,7 @@ tell application "Capture One"
 	-- Get capture folder path and SKU from first rated image
 	set selectedVariant to the path of (get parent image of (get item 1 of ratedVariants))
 	set capturesFolderPath to (do shell script "dirname \"" & selectedVariant & "\"")
-	set outputFolderPath to "/Users/jmorley/Pictures/ProductImages"
+	set outputFolderPath to exportOutputFolder
 	set sku to do shell script ("basename '" & capturesFolderPath & "'")
 	set ratedImagesCount to count (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 
@@ -226,7 +234,7 @@ tell application "Capture One"
 	tell recipe "DollyMixtures Recipe" of front document
 		set enabled to true
 		set root folder type to custom location
-		set root folder location to POSIX file "/Users/jmorley/Pictures/ProductImages"
+		set root folder location to POSIX file exportOutputFolder
 		set output format to JPEG
 		set JPEG quality to 100
 		set color profile to "sRGB Color Space Profile"
@@ -249,7 +257,7 @@ tell application "Capture One"
 	set ratedVariants to (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 	set selectedVariant to the path of (get parent image of (get item 1 of ratedVariants))
 	set capturesFolderPath to (do shell script "dirname \"" & selectedVariant & "\"")
-	set outputFolderPath to "/Users/jmorley/Pictures/ProductImages"
+	set outputFolderPath to exportOutputFolder
 	set sku to do shell script ("basename '" & capturesFolderPath & "'")
 	set ratedImagesCount to count (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 
