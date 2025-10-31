@@ -4,7 +4,7 @@ All notable changes to the Glassons Scripts will be documented in this file.
 
 ## [1.2.0] - 2025-10-31
 
-### Export Rated Images
+### Rename and Export Rated Images
 
 #### Added
 - User-defined `exportOutputFolder` property for custom export locations
@@ -19,7 +19,7 @@ All notable changes to the Glassons Scripts will be documented in this file.
 
 ## [1.1.0]
 
-### Export Rated Images
+### Rename and Export Rated Images
 
 #### Added
 - Support for all RAW file formats (CR3, NEF, EIP, etc.)
@@ -30,7 +30,7 @@ All notable changes to the Glassons Scripts will be documented in this file.
 
 ## [1.0.0]
 
-### Export Rated Images
+### Rename and Export Rated Images
 
 #### Added
 - Initial release with core export functionality

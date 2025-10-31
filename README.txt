@@ -10,7 +10,7 @@ INSTALLATION
 SCRIPTS
 -------
 
-Export Rated Images (Command + 6)
+Rename and Export Rated Images (Command + 6)
 - Exports 1-5 star rated images from Capture One to JPG format
 - Configure exportOutputFolder property before first use
 
