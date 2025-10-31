@@ -33,6 +33,7 @@ CHANGELOG:
 v1.1 - Added support for all RAW file formats (CR3, NEF, eip, etc.)
      - Changed rating filter from 1-star only to 1-5 stars
      - Simplified file format detection logic
+     - Reduced batch rename wait time from 10s to 1s
 v1.0 - Original script functionality
 
 AUTHOR: Jesse Morley
