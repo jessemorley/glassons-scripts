@@ -1,11 +1,7 @@
 # Glassons Scripts
 
-AppleScript utilities for Capture One workflow automation at Glassons.
-
-## Scripts
-
 ### Rename and Export Rated Images
-Exports 1-5 star rated images from Capture One to JPG format for the Glassons Ecom system. Handles conflict resolution when re-running with different selections.
+Renames and exports rated images from Capture One to a defined local output folder. Images are exported as JPGs (2000 x 2547px) with web sharpening, ready for upload. Handles conflict resolution when re-running with different selections.
 
 **Recommended shortcut:** Command + 6
 
