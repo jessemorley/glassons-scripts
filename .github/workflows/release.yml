@@ -18,7 +18,10 @@ jobs:
 
       - name: Create ZIP archive
         run: |
-          zip -r glassons-scripts.zip compiled/ applescripts/ README.md CHANGELOG.md
+          cd compiled
+          zip ../glassons-scripts.zip *.scpt
+          cd ..
+          zip -u glassons-scripts.zip README.md CHANGELOG.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
