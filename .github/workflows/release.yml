@@ -26,7 +26,7 @@ jobs:
           cd compiled
           zip ../glassons-scripts.zip *.scpt
           cd ..
-          zip -u glassons-scripts.zip RELEASE_README.txt
+          zip -u glassons-scripts.zip README.txt
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
