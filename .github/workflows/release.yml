@@ -19,14 +19,14 @@ jobs:
       - name: Extract release notes for this version
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
-          awk '/^## \['$VERSION'\]/, /^## \[/ {if (/^## \[/ && NR!=1 && !/\['$VERSION'\]/) exit; print}' CHANGELOG.md > RELEASE_NOTES.md
+          awk '/^## \['$VERSION'\]/,/^## \[/ {if (/^## \[/ && !/\['$VERSION'\]/) exit; if (!/^## \['$VERSION'\]/) print}' CHANGELOG.md > RELEASE_NOTES.md
 
       - name: Create ZIP archive
         run: |
           cd compiled
           zip ../glassons-scripts.zip *.scpt
           cd ..
-          zip -u glassons-scripts.zip RELEASE_README.txt CHANGELOG.md
+          zip -u glassons-scripts.zip RELEASE_README.txt
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
