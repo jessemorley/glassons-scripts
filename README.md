@@ -21,7 +21,13 @@ Creates a new folder in Capture One using text from the clipboard. Similar to th
 
 ## Installation
 
-1. Open each `.applescript` file in Script Editor (Applications > Utilities > Script Editor)
+### Option 1: Use Pre-compiled Scripts (Recommended)
+1. Download the compiled `.scpt` files from the `compiled/` directory
+2. Place them in `~/Library/Scripts/Capture One Scripts` or configure via Capture One's script menu
+3. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
+
+### Option 2: Compile from Source
+1. Open each `.applescript` file from the `applescripts/` directory in Script Editor
 2. Save as a compiled script (.scpt) or application (.app)
 3. Place in `~/Library/Scripts/Capture One Scripts` or configure via Capture One's script menu
 4. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts

@@ -7,34 +7,23 @@ on:
 
 jobs:
   release:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Compile AppleScripts to .scpt
-        run: |
-          osacompile -o "Export Rated Images.scpt" "Export Rated Images.applescript"
-          osacompile -o "New Capture Folder from Clipboard.scpt" "New Capture Folder from Clipboard.applescript"
-          osacompile -o "New Folder from Clipboard.scpt" "New Folder from Clipboard.applescript"
-
       - name: Create ZIP archive
         run: |
-          zip -r glassons-scripts.zip *.scpt README.md CHANGELOG.md
-
-      - name: Extract version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          zip -r glassons-scripts.zip compiled/ applescripts/ README.md CHANGELOG.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             glassons-scripts.zip
-            Export Rated Images.scpt
-            New Capture Folder from Clipboard.scpt
-            New Folder from Clipboard.scpt
+            compiled/*.scpt
+            applescripts/*.applescript
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
