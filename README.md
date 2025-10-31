@@ -22,9 +22,8 @@ Creates a new folder in Capture One using text from the clipboard. Replaces the 
 ## Installation
 
 1. Download `glassons-scripts.zip` from the latest release
-2. Unzip the files and open each .applescript file in Script Editor
-3. Compile and save each script as a .scpt file to `~/Library/Scripts/Capture One Scripts`
-4. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
+2. Unzip the files and place the .applescript files in `~/Library/Scripts/Capture One Scripts`
+3. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
 
 ## Configuration
 
