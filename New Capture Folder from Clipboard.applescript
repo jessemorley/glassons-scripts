@@ -17,7 +17,7 @@ WORKFLOW:
 5. Set as active capture location
 6. Reset capture counter
 
-RECOMMENDED SHORTCUT: Command + 9
+RECOMMENDED SHORTCUT: Command + 0
 
 AUTHOR: Jesse Morley
 DATE: October 2025
@@ -28,7 +28,7 @@ DATE: October 2025
 -- CONFIGURATION SETTINGS
 -- ============================================================================
 
-property setCaptureFolder : false
+property setCaptureFolder : true
 -- When true, sets the newly created folder as the active capture location
 
 property resetCaptureCounter : true
