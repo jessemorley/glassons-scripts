@@ -2,6 +2,18 @@
 
 All notable changes to the Glassons Scripts will be documented in this file.
 
+## [1.2.2] - 2025-10-31
+
+### Rename and Export Rated Images
+
+#### Changed
+- Updated script description to clarify export dimensions and web sharpening
+
+### Infrastructure
+
+#### Changed
+- README.txt now generated during release workflow instead of being tracked in repository
+
 ## [1.2.1] - 2025-10-31
 
 ### Rename and Export Rated Images
