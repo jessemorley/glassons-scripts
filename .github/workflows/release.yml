@@ -21,7 +21,7 @@ jobs:
           cd compiled
           zip ../glassons-scripts.zip *.scpt
           cd ..
-          zip -u glassons-scripts.zip README.md CHANGELOG.md
+          zip -u glassons-scripts.zip RELEASE_README.txt CHANGELOG.md
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
