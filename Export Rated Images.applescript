@@ -1,9 +1,9 @@
 (*
 ================================================================================
-GLASSONS EXPORT RATED IMAGES SCRIPT v1.2
+GLASSONS EXPORT RATED IMAGES SCRIPT
 ================================================================================
 
-PURPOSE:
+DESCRIPTION:
 This script exports rated images (1-5 stars) from Capture One to JPGs for the
 Glassons Ecom system. It handles conflict resolution when re-running with
 different selections by renaming previously unrated images, ensuring clean

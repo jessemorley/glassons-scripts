@@ -1,9 +1,9 @@
 (*
 ================================================================================
-GLASSONS NEW FOLDER FROM CLIPBOARD v1.0
+GLASSONS NEW FOLDER FROM CLIPBOARD
 ================================================================================
 
-PURPOSE:
+DESCRIPTION:
 This script creates a new folder in Capture One's capture directory using text
 from the clipboard--replacing the first space or tab from the string with an
 underscore. It adds the folder to favourites, with options to set it as the
