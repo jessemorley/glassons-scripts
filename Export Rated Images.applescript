@@ -232,6 +232,7 @@ tell application "Capture One"
 		set color profile to "sRGB Color Space Profile"
 		set output sub folder to ""
 		set output name format to "[Image Name]"
+		set existing files to overwrite
 	end tell
 end tell
 
@@ -281,21 +282,7 @@ tell application "Capture One"
 EOF"
 	do shell script setWaitForRenameScript
 
-	-- Clear existing JPG files from output folder before export
-	do shell script ("find \"" & outputFolderPath & "\" \\( -name \"*.jpg\" -o -name \"*.JPG\" \\) -delete")
-
-	-- Move any remaining JPG files to trash using Finder (fallback for locked files)
-	try
-		tell application "Finder"
-			set outputFolder to (POSIX file outputFolderPath) as alias
-			set jpgItems to every file of outputFolder whose name extension is "jpg" or name extension is "JPG"
-			if jpgItems is not {} then
-				move jpgItems to trash
-			end if
-		end tell
-	end try
-
-	-- Export rated images to JPGs using the configured recipe
+	-- Export rated images to JPGs using the configured recipe (will overwrite existing files)
 	repeat with selectedVariant in (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 		set filePath to get path of (get parent image of (get item 1 of selectedVariant))
 		process filePath recipe "DollyMixtures Recipe"
