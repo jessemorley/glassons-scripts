@@ -181,6 +181,16 @@ tell application "Capture One"
 		set output sub folder to ""
 		set output name format to "[Image Name]"
 		set existing files to overwrite
+		-- Scale dimensions: 2000 x 2547px
+		set scaling method to BoundingDimensions
+		set scaling unit to pixels
+		set primary scaling value to 2000
+		set secondary scaling value to 2547
+		-- Output sharpening for screen: Amount 60, Radius 0.6, Threshold 0
+		set sharpening to for screen
+		set sharpening amount to 60
+		set sharpening radius to 0.6
+		set sharpening threshold to 0
 	end tell
 end tell
 

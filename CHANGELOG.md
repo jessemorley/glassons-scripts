@@ -2,6 +2,17 @@
 
 All notable changes to the Glassons Scripts will be documented in this file.
 
+## [1.2.1] - 2025-10-31
+
+### Rename and Export Rated Images
+
+#### Added
+- Image scaling to 2000 x 2547 pixels (bounding dimensions)
+- Output sharpening for screen (Amount: 60, Radius: 0.6, Threshold: 0)
+
+#### Changed
+- Scaling unit explicitly set to pixels to prevent incorrect unit conversion
+
 ## [1.2.0] - 2025-10-31
 
 ### Rename and Export Rated Images
