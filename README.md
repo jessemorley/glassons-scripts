@@ -10,27 +10,20 @@ Exports 1-5 star rated images from Capture One to JPG format for the Glassons Ec
 **Recommended shortcut:** Command + 6
 
 ### New Capture Folder from Clipboard
-Creates a new capture folder in Capture One using text from the clipboard. Replaces the first space/tab with an underscore, adds to favorites, sets as active capture location, and resets the counter.
+Creates a new capture folder in Capture One using text from the clipboard. Replaces the first space/tab with an underscore, adds to favourites, sets as active capture location, and resets the counter.
 
 **Recommended shortcut:** Command + 0
 
 ### New Folder from Clipboard
-Creates a new folder in Capture One using text from the clipboard. Similar to the capture folder script but without setting as the active capture location.
+Creates a new folder in Capture One using text from the clipboard. Replaces the first space/tab with an underscore, adds to favourites, and resets the counter.
 
 **Recommended shortcut:** Command + 9
 
 ## Installation
 
-### Option 1: Use Pre-compiled Scripts (Recommended)
-1. Download the compiled `.scpt` files from the `compiled/` directory
-2. Place them in `~/Library/Scripts/Capture One Scripts` or configure via Capture One's script menu
+1. Download `glassons-scripts.zip` from the latest release
+2. Unzip the files and place the .scpt files in `~/Library/Scripts/Capture One Scripts`
 3. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
-
-### Option 2: Compile from Source
-1. Open each `.applescript` file from the `applescripts/` directory in Script Editor
-2. Save as a compiled script (.scpt) or application (.app)
-3. Place in `~/Library/Scripts/Capture One Scripts` or configure via Capture One's script menu
-4. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
 
 ## Configuration
 

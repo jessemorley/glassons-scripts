@@ -1,7 +1,5 @@
-GLASSONS SCRIPTS v1.2.0
+GLASSONS CAPTURE ONE SCRIPTS v1.2.0
 ================================================================================
-
-Pre-compiled AppleScript utilities for Capture One workflow automation.
 
 INSTALLATION
 ------------
@@ -18,11 +16,12 @@ Export Rated Images (Command + 6)
 
 New Capture Folder from Clipboard (Command + 0)
 - Creates capture folder from clipboard text
+- Adds to favourites
 - Sets as active capture location and resets counter
 
 New Folder from Clipboard (Command + 9)
 - Creates folder from clipboard text
-- Adds to favorites
+- Adds to favourites
 
 CONFIGURATION
 -------------
