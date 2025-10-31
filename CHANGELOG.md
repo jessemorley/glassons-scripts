@@ -2,9 +2,17 @@
 
 All notable changes to the Glassons Scripts will be documented in this file.
 
+## [1.2.4] - 2025-11-01
+
+### Rename and Export Selects
+
+#### Changed
+- Renamed script from "Rename and Export Rated Images" to "Rename and Export Selects"
+- Updated all references across documentation and configuration files
+
 ## [1.2.3] - 2025-10-31
 
-### Rename and Export Rated Images
+### Rename and Export Selects
 
 #### Added
 - Error handling for unmounted export volume/folder with user-friendly alert message
@@ -29,7 +37,7 @@ All notable changes to the Glassons Scripts will be documented in this file.
 
 ## [1.2.1] - 2025-10-31
 
-### Rename and Export Rated Images
+### Rename and Export Selects
 
 #### Added
 - Image scaling to 2000 x 2547 pixels (bounding dimensions)
@@ -40,7 +48,7 @@ All notable changes to the Glassons Scripts will be documented in this file.
 
 ## [1.2.0] - 2025-10-31
 
-### Rename and Export Rated Images
+### Rename and Export Selects
 
 #### Added
 - User-defined `exportOutputFolder` property for custom export locations
@@ -55,7 +63,7 @@ All notable changes to the Glassons Scripts will be documented in this file.
 
 ## [1.1.0]
 
-### Rename and Export Rated Images
+### Rename and Export Selects
 
 #### Added
 - Support for all RAW file formats (CR3, NEF, EIP, etc.)
@@ -66,7 +74,7 @@ All notable changes to the Glassons Scripts will be documented in this file.
 
 ## [1.0.0]
 
-### Rename and Export Rated Images
+### Rename and Export Selects
 
 #### Added
 - Initial release with core export functionality

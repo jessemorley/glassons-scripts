@@ -1,6 +1,6 @@
 (*
 ================================================================================
-GLASSONS RENAME AND EXPORT RATED IMAGES SCRIPT
+GLASSONS RENAME AND EXPORT SELECTS SCRIPT
 ================================================================================
 
 DESCRIPTION:
