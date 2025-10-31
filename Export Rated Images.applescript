@@ -1,11 +1,11 @@
 (*
 ================================================================================
-GLASSONS EXPORT RATED IMAGES SCRIPT v1.1
+GLASSONS EXPORT RATED IMAGES SCRIPT v1.2
 ================================================================================
 
 PURPOSE:
 This script exports rated images (1-5 stars) from Capture One to JPGs and uploads them to
-the Dolly Mixtures system. It handles conflict resolution when re-running with
+the Glassons Ecom system. It handles conflict resolution when re-running with
 different selections by renaming previously unrated images, ensuring clean
 exports without filename conflicts.
 
@@ -13,23 +13,15 @@ WORKFLOW:
 1. Validate session (single document open, rated images exist)
 2. Identify capture folder and SKU from rated image location
 3. Rename conflicting unrated images with "_prev" suffix
-4. Configure export recipe (DollyMixtures Recipe)
+4. Configure export recipe (Glassons Ecom Recipe)
 5. Batch rename rated images to SKU_COUNTER format
-6. Clear existing JPG files from output folder
-7. Export rated images as JPGs
-8. Upload images via shell script
-
-FEATURES:
-- Exports images with ratings 1-5 stars
-- Works with any RAW format supported by Capture One
-- Prevents filename conflicts from re-running with different selections
-- Clears old JPG exports before creating new ones
-- Uses Capture One's batch rename to preserve catalog references
-- Asynchronous upload via background shell script
+6. Export rated images as JPGs
+7. Upload images via shell script
 
 RECOMMENDED SHORTCUT: Command + 6
 
 CHANGELOG:
+v1.2 -Added user-defined exportOutputFolder property
 v1.1 - Added support for all RAW file formats (CR3, NEF, eip, etc.)
      - Changed rating filter from 1-star only to 1-5 stars
      - Simplified file format detection logic
@@ -45,13 +37,13 @@ use AppleScript version "2.4" -- Yosemite (10.10) or later
 use framework "Foundation"
 use scripting additions
 
-
 -- ============================================================================
 -- CONFIGURATION
 -- ============================================================================
 
 property exportOutputFolder : "/Users/jmorley/Pictures/ProductImages"
 -- The folder where exported JPG images will be saved
+-- Glassons: "Volumes/ProductImages"
 
 
 -- ============================================================================
@@ -191,14 +183,14 @@ tell application "Capture One"
 	-- Validate only one session is open
 	set windowCount to (get count of documents)
 	if windowCount > 1 then
-		display alert "Dolly Mixtures Upload Failure." message "You have more than one Capture Session open. Please close all other sessions before attempting upload."
+		display alert "Glassons Ecom Upload Failure." message "You have more than one Capture Session open. Please close all other sessions before attempting upload."
 		return
 	end if
 
 	-- Validate that rated images exist
 	set ratedVariants to (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 	if ratedVariants = {} then
-		display alert "Dolly Mixtures Upload Failure." message "Please ensure you have a SKU Capture folder selected, and you have images marked with 1-5 stars."
+		display alert "Glassons Ecom Upload Failure." message "Please ensure you have a SKU Capture folder selected, and you have images marked with 1-5 stars."
 		return
 	end if
 
@@ -211,7 +203,7 @@ tell application "Capture One"
 
 	-- Validate we're in a Capture folder
 	if "Capture" is not in capturesFolderPath then
-		display alert "Dolly Mixtures Upload Failure." message "Incorrect folder selected, please choose a SKU folder within the Capture folder."
+		display alert "Glassons Ecom Upload Failure." message "Incorrect folder selected, please choose a SKU folder within the Capture folder."
 		return
 	end if
 
@@ -221,17 +213,17 @@ tell application "Capture One"
 	-- Create output folder for export
 	do shell script ("mkdir -p \"" & outputFolderPath & "\"")
 
-	-- Set up the DollyMixtures export recipe if not already existing
+	-- Set up the Glassons Ecom export recipe if not already existing
 	try
-		get recipe "DollyMixtures Recipe" of front document
+		get recipe "Glassons Ecom Recipe" of front document
 	on error errMsg
 		tell front document
-			make new recipe with properties {name:"DollyMixtures Recipe"}
+			make new recipe with properties {name:"Glassons Ecom Recipe"}
 		end tell
 	end try
 
-	-- Configure export options for DollyMixtures export recipe
-	tell recipe "DollyMixtures Recipe" of front document
+	-- Configure export options for Glassons Ecom export recipe
+	tell recipe "Glassons Ecom Recipe" of front document
 		set enabled to true
 		set root folder type to custom location
 		set root folder location to POSIX file exportOutputFolder
@@ -293,7 +285,7 @@ EOF"
 	-- Export rated images to JPGs using the configured recipe (will overwrite existing files)
 	repeat with selectedVariant in (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 		set filePath to get path of (get parent image of (get item 1 of selectedVariant))
-		process filePath recipe "DollyMixtures Recipe"
+		process filePath recipe "Glassons Ecom Recipe"
 		-- Get base filename without extension (works for any extension)
 		set baseFileName to do shell script "basename \"" & filePath & "\" | sed 's/\\.[^.]*$//'"
 		set exportedFilePath to outputFolderPath & "/" & baseFileName & ".jpg"
