@@ -1,13 +1,12 @@
 (*
 ================================================================================
-GLASSONS NEW FOLDER FROM CLIPBOARD
+GLASSONS NEW CAPTURE FOLDER FROM CLIPBOARD
 ================================================================================
 
 DESCRIPTION:
-This script creates a new folder in Capture One's capture directory using text
-from the clipboard--replacing the first space or tab from the string with an
-underscore. It adds the folder to favourites, with options to set it as the
-active capture location and reset the capture counter.
+Creates a new capture folder in Capture One using text from the clipboard.
+Replaces the first space/tab with an underscore, adds to favourites, sets as
+active capture location, and resets the counter.
 
 WORKFLOW:
 1. Read folder name from clipboard
@@ -20,7 +19,7 @@ WORKFLOW:
 RECOMMENDED SHORTCUT: Command + 0
 
 AUTHOR: Jesse Morley
-DATE: October 2025
+LAST UPDATED: October 2025
 ================================================================================
 *)
 
@@ -88,12 +87,12 @@ end if
 -- ============================================================================
 -- FUNCTION: Create New Folder in Capture Directory
 -- ============================================================================
-(*
-1. Gets the current capture directory from Capture One
-2. Finds the root "Capture" folder (even if Capture One is pointing to a subfolder)
-3. Checks for duplicate folders
-4. Creates the new folder
-*)
+
+-- Gets the current capture directory from Capture One
+-- Finds the root "Capture" folder (even if Capture One is pointing to a subfolder)
+-- Checks for duplicate folders
+-- Creates the new folder
+
 on createNewFolderInCapture(folderName)
 	try
 		log "Starting createNewFolderInCapture with: " & folderName
@@ -118,12 +117,6 @@ on createNewFolderInCapture(folderName)
 				set currentCaptureDir to currentCaptureDir as alias
 				log "Converted to alias successfully"
 			on error errMsg number errNum
-				(*
-				If conversion to alias fails, the path doesn't exist.
-				This can happen if Capture One is pointing to a subfolder
-				that hasn't been created yet. We'll parse the path to find
-				the parent "Capture" folder.
-				*)
 				log "Current capture folder doesn't exist, attempting to use parent Capture folder"
 				
 				set capturePath to currentCaptureDir as text
@@ -172,10 +165,7 @@ on createNewFolderInCapture(folderName)
 						set fullPath to POSIX path of d
 						
 						if fullPath contains "/Capture/" then
-							(*
-							CASE 1: We're inside a subfolder of Capture
-							Navigate up the directory tree until we reach "Capture"
-							*)
+							-- Navigate to Capture folder from subfolder
 							repeat while captureName is not "Capture"
 								set d to container of d as alias
 								set captureName to name of folder d
@@ -183,10 +173,7 @@ on createNewFolderInCapture(folderName)
 							set currentCaptureDir to d as alias
 							log "Found Capture folder by navigating up from subfolder"
 						else
-							(*
-							CASE 2: We're at sibling level (e.g., "Selects" folder)
-							Navigate to parent, then look for "Capture" folder
-							*)
+							-- Navigate to Capture folder from sibling folder (e.g. "Output")
 							set parentDir to container of d as alias
 							if exists folder "Capture" of parentDir then
 								set currentCaptureDir to folder "Capture" of parentDir as alias
@@ -240,11 +227,11 @@ end createNewFolderInCapture
 -- ============================================================================
 -- FUNCTION: Add to Favorites and Configure Capture Settings
 -- ============================================================================
-(*
-1. Adds the folder path to Capture One favorites
-2. Optionally setting the path as the active capture location
-3. Optionally resetting the capture counter to 0
-*)
+
+-- Adds the folder path to Capture One favorites
+-- Optionally setting the path as the active capture location
+-- Optionally resetting the capture counter to 0
+
 on addToFavoritesAndSetCapture(dirPath, setCapture)
 	try
 		log "Starting addToFavoritesAndSetCapture"

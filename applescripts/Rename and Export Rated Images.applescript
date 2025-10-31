@@ -4,10 +4,11 @@ GLASSONS RENAME AND EXPORT RATED IMAGES SCRIPT
 ================================================================================
 
 DESCRIPTION:
-This script exports rated images (1-5 stars) from Capture One to JPGs for the
-Glassons Ecom system. It handles conflict resolution when re-running with
-different selections by renaming previously unrated images, ensuring clean
-exports without filename conflicts.
+Renames and exports rated images from Capture One to a defined local output
+folder. Images are exported as JPGs (2000 x 2547px) with web sharpening, ready
+for upload. Handles conflict resolution when re-running with different
+selections by renaming previously unrated images, ensuring clean exports without
+filename conflicts.
 
 WORKFLOW:
 1. Validate session (single document open, rated images exist)
@@ -20,7 +21,7 @@ WORKFLOW:
 RECOMMENDED SHORTCUT: Command + 6
 
 AUTHOR: Jesse Morley
-DATE: October 2025
+LAST UPDATED: October 2025
 ================================================================================
 *)
 
@@ -39,7 +40,6 @@ property exportOutputFolder : "/Users/jmorley/Pictures/ProductImages"
 -- ============================================================================
 -- FUNCTION: Check for Image Files
 -- ============================================================================
-
 
 -- Check if a folder contains any image files.
 on hasImageFiles(folderPath)

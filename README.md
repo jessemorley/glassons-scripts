@@ -1,19 +1,19 @@
 # Glassons Scripts
 
 ### Rename and Export Rated Images
-Renames and exports rated images from Capture One to a defined local output folder. Images are exported as JPGs (2000 x 2547px) with web sharpening, ready for upload. Handles conflict resolution when re-running with different selections.
+Renames and exports rated images from Capture One to a defined local output folder. Images are exported as JPGs (2000 x 2547px) with web sharpening, ready for upload. Handles conflict resolution when re-running with different selections by renaming previously unrated images, ensuring clean exports without filename conflicts.
 
-**Recommended shortcut:** Command + 6
+**Recommended shortcut:** ⌘ 6
 
 ### New Capture Folder from Clipboard
 Creates a new capture folder in Capture One using text from the clipboard. Replaces the first space/tab with an underscore, adds to favourites, sets as active capture location, and resets the counter.
 
-**Recommended shortcut:** Command + 0
+**Recommended shortcut:** ⌘ 0
 
 ### New Folder from Clipboard
 Creates a new folder in Capture One using text from the clipboard. Replaces the first space/tab with an underscore, adds to favourites, and resets the counter.
 
-**Recommended shortcut:** Command + 9
+**Recommended shortcut:** ⌘ 9
 
 ## Installation
 
