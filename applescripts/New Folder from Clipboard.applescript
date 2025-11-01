@@ -26,7 +26,7 @@ LAST UPDATED: October 2025
 -- CONFIGURATION SETTINGS
 -- ============================================================================
 
-property setCaptureFolder : true
+property setCaptureFolder : false
 -- When true, sets the newly created folder as the active capture location
 
 property resetCaptureCounter : true

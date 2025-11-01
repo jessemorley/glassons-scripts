@@ -3,12 +3,11 @@
 ### Rename and Export Selects (⌘ 6)
 Renames and exports rated images from Capture One to a defined local output folder. Images are exported as sharpened and resized JPGs ready for upload. Handles conflict resolution when re-running with different selections by renaming previously unrated images, ensuring clean exports without filename conflicts.
 
-
 ### New Capture Folder from Clipboard (⌘ 0)
 Creates a new capture folder in Capture One using text from the clipboard. Replaces the first space/tab with an underscore, adds to favourites, sets as active capture location, and resets the counter.
 
 ### New Folder from Clipboard (⌘ 9)
-Creates a new folder in Capture One using text from the clipboard. Replaces the first space/tab with an underscore, adds to favourites, and resets the counter.
+Identical to the New Capture Folder from Clipboard script, but with `setCaptureFolder` set to false. Useful when shooting multiple SKUs per look.
 
 ## Installation
 
