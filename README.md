@@ -15,8 +15,14 @@ Identical to the New Capture Folder from Clipboard script, but with `setCaptureF
 ## Installation
 
 1. Download `glassons-scripts.zip` from the latest release
-2. Unzip the files and place the .applescript files in `~/Library/Scripts/Capture One Scripts`
-3. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
+2. Unzip the files
+3. Double-click `install.command` and allow permission when prompted
+4. Restart Capture One for keyboard shortcuts to take effect
+
+The installer will:
+- Automatically detect your Capture One version
+- Copy scripts to `~/Library/Scripts/Capture One Scripts`
+- Configure keyboard shortcuts (⌘6, ⌘0, ⌘9)
 
 ## Configuration
 

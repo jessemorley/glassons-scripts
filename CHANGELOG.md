@@ -2,6 +2,23 @@
 
 All notable changes to the Glassons Scripts will be documented in this file.
 
+## [1.3.0] - 2025-11-02
+
+### Added
+
+- Automated installation script (`install.command`) with Capture One version detection (supports v15-23) and error handling
+- Automated keyboard shortcut configuration for all three scripts
+
+### Changed
+
+- Simplified installation process to double-click installer instead of manual file copying and shortcut setup
+- Updated README with streamlined installation instructions
+- New Capture Folder from Clipboard and New Folder from Clipboard now always reset capture counter
+
+### Removed
+
+- Removed `resetCaptureCounter` configuration property from both clipboard folder scripts
+
 ## [1.2.4] - 2025-11-01
 
 ### Changed

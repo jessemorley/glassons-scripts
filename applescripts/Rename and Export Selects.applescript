@@ -236,7 +236,7 @@ tell application "Capture One"
 	-- Check if image files exist before waiting
 	if not my hasImageFiles(capturesFolderPath) then return
 
-	-- Wait for batch rename to complete (max 1 second for testing)
+	-- Wait for batch rename to complete
 	-- Matches any file with pattern SKU_N.* (any extension)
 	set setWaitForRenameScript to "/bin/bash -s <<'EOF'
 	waitCount=0
