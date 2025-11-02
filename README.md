@@ -27,5 +27,3 @@ The installer will:
 ## Configuration
 
 **Rename and Export Selects:** Update the `exportOutputFolder` property at the top of the script to match your export destination.
-
-**Folder Scripts:** Configure `setCaptureFolder` and `resetCaptureCounter` properties as needed.
