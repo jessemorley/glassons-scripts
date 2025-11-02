@@ -30,10 +30,6 @@ LAST UPDATED: October 2025
 property setCaptureFolder : true
 -- When true, sets the newly created folder as the active capture location
 
-property resetCaptureCounter : true
--- When true, resets Capture One's capture counter to 0 for the new folder
-
-
 -- ============================================================================
 -- MAIN SCRIPT EXECUTION
 -- ============================================================================
@@ -230,7 +226,7 @@ end createNewFolderInCapture
 
 -- Adds the folder path to Capture One favorites
 -- Optionally setting the path as the active capture location
--- Optionally resetting the capture counter to 0
+-- Resets the capture counter to 0
 
 on addToFavoritesAndSetCapture(dirPath, setCapture)
 	try
@@ -258,16 +254,14 @@ on addToFavoritesAndSetCapture(dirPath, setCapture)
 				end try
 			end if
 			
-			-- Reset capture counter (if requested)
-			if my resetCaptureCounter then
-				try
-					set capture counter to 0
-					log "Reset capture counter to 0"
-				on error errMsg number errNum
-					display dialog "Error resetting counter: " & errMsg & " (" & errNum & ")" buttons {"OK"} default button "OK"
-					return
-				end try
-			end if
+			-- Reset capture counter
+			try
+				set capture counter to 0
+				log "Reset capture counter to 0"
+			on error errMsg number errNum
+				display dialog "Error resetting counter: " & errMsg & " (" & errNum & ")" buttons {"OK"} default button "OK"
+				return
+			end try
 		end tell
 		
 		log "addToFavoritesAndSetCapture completed successfully"
