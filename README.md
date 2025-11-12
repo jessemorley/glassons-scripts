@@ -6,11 +6,11 @@ Renames and exports rated images from Capture One to a defined local output fold
 
 Renaming sequence: `SKU_1, SKU_2, SKU_3, SKU_4, SKU_5, SKU_6, SKU_ADDITIONAL 1, SKU_ADDITIONAL 2, SKU_ADDITIONAL 3, SKU_ADDITIONAL 4`
 
-### Rename and Export Acc Model (⌘ 5)
+### Rename and Export Clearcut (⌘ 7)
 
 Renaming sequence: `SKU_ACCMODEL, SKU_3, SKU_4, SKU_5`
 
-### Rename and Export Clearcut (⌘ 7)
+### Rename and Export Acc Model (⌘ 8)
 
 Renaming sequence: `SKU_ACCMODEL, SKU_3, SKU_4, SKU_5`
 
