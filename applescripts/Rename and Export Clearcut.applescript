@@ -42,7 +42,7 @@ use scripting additions
 -- CONFIGURATION
 -- ============================================================================
 
-property exportOutputFolder : "/Users/jmorley/Pictures/Output"
+property exportOutputFolder : "/Volumes/ProductImages"
 -- The folder where exported JPG images will be saved
 
 property exportRecipeType : "full-size"

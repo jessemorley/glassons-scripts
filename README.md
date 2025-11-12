@@ -4,15 +4,15 @@
 
 Renames and exports rated images from Capture One to a defined local output folder. Images are exported as sharpened and resized JPGs ready for upload. Handles conflict resolution when re-running with different selections by renaming previously unrated images, ensuring clean exports without filename conflicts.
 
-Renaming sequence: SKU_1, SKU_2, SKU_3, SKU_4, SKU_5, SKU_6, SKU_ADDITIONAL 1, SKU_ADDITIONAL 2, SKU_ADDITIONAL 3, SKU_ADDITIONAL 4
+Renaming sequence: `SKU_1, SKU_2, SKU_3, SKU_4, SKU_5, SKU_6, SKU_ADDITIONAL 1, SKU_ADDITIONAL 2, SKU_ADDITIONAL 3, SKU_ADDITIONAL 4`
 
 ### Rename and Export Acc Model (⌘ 5)
 
-As above, with renaming sequence: SKU_ACCMODEL, SKU_3, SKU_4, SKU_5
+Renaming sequence: `SKU_ACCMODEL, SKU_3, SKU_4, SKU_5`
 
 ### Rename and Export Clearcut (⌘ 7)
 
-As above, with renaming sequence: SKU_ACCMODEL, SKU_3, SKU_4, SKU_5
+Renaming sequence: `SKU_ACCMODEL, SKU_3, SKU_4, SKU_5`
 
 ### New Capture Folder from Clipboard (⌘ 0)
 
