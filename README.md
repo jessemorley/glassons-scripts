@@ -27,7 +27,7 @@ Identical to the New Capture Folder from Clipboard script, but with `setCaptureF
 1. Download `glassons-scripts.zip` from the latest release
 2. Unzip the files
 3. Copy scripts to `~/Library/Scripts/Capture One Scripts`
-4. Configure keyboard shortcuts in `System Settings > Keyboard > Keyboard Shortcuts... > App Shortcuts
+4. Configure keyboard shortcuts in `System Settings > Keyboard > Keyboard Shortcuts... > App Shortcuts`
 
 ## Configuration
 

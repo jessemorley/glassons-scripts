@@ -36,22 +36,6 @@ jobs:
           1. Copy the .applescript files to ~/Library/Scripts/Capture One Scripts
           2. Assign keyboard shortcuts via System Settings > Keyboard > Shortcuts > App Shortcuts
 
-          SCRIPTS
-          -------
-
-          Rename and Export Selects (Command + 6)
-          - Exports 1-5 star rated images from Capture One to JPG format
-          - Configure exportOutputFolder property before first use
-
-          New Capture Folder from Clipboard (Command + 0)
-          - Creates capture folder from clipboard text
-          - Adds to favourites
-          - Sets as active capture location and resets counter
-
-          New Folder from Clipboard (Command + 9)
-          - Creates folder from clipboard text
-          - Adds to favourites
-
           CONFIGURATION
           -------------
 
