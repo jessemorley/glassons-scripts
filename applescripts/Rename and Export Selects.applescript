@@ -31,7 +31,7 @@ ERROR HANDLING:
 RECOMMENDED SHORTCUT: Command + 6
 
 AUTHOR: Jesse Morley
-LAST UPDATED: October 2025
+LAST UPDATED: November 2025
 ================================================================================
 *)
 

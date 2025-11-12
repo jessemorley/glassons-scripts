@@ -20,7 +20,7 @@ WORKFLOW:
 RECOMMENDED SHORTCUT: Command + 9
 
 AUTHOR: Jesse Morley
-LAST UPDATED: October 2025
+LAST UPDATED: November 2025
 ================================================================================
 *)
 
