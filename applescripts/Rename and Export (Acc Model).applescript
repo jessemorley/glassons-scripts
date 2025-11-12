@@ -1,24 +1,27 @@
 (*
 ================================================================================
-GLASSONS RENAME AND EXPORT ACC MODEL SCRIPT
+GLASSONS RENAME AND EXPORT (ACC MODEL) SCRIPT
 ================================================================================
 
 DESCRIPTION:
 Renames and exports rated images from Capture One to a user-defined local output
 folder. Images are exported at web-size (2000x2537px) or full-size (100%).
-Handles conflict resolution when re-running with different selections by renaming
-previously unrated images, ensuring clean exports without filename conflicts.
+Handles conflict resolution when re-running with different selections by using a
+two-phase rename: first moving existing rated images to temp names, then renaming
+unrated images, ensuring clean exports without filename conflicts.
+
+RENAMING SEQUENCE:
+SKU_ACCMODEL, SKU_3, SKU_4, SKU_5
 
 WORKFLOW:
 1. Validate session (single document open, rated images exist)
 2. Identify capture folder and SKU from rated image location
-3. Rename conflicting unrated images with "_prev" suffix
+3. Two-phase conflict resolution:
+   a. Move ALL existing rated images to temp names (SKU_TEMP_N)
+   b. Rename conflicting unrated images with "_prev" suffix
 4. Configure export recipe (Glassons Ecomm) (full-size or web-size)
 5. Batch rename rated images to SKU_ACCMODEL and SKU_3-5 format
 6. Export rated images as JPGs (overwrites existing files)
-
-RENAMING SEQUENCE:
-SKU_ACCMODEL, SKU_3, SKU_4, SKU_5
 
 ERROR HANDLING:
 - No images are rated
@@ -236,6 +239,64 @@ end renameUnstarredMatchingImages
 
 
 -- ============================================================================
+-- FUNCTION: Rename All Existing Rated Images to Temp Names
+-- ============================================================================
+(*
+Renames ALL currently rated images in the capture folder to temporary names.
+This prevents conflicts when batch renaming newly selected rated images, particularly
+when images have been reordered. By moving all existing rated images to temp names
+first, we ensure the target filename slots (SKU_ACCMODEL, SKU_3, etc.) are available
+for the new rename operation.
+*)
+on renameAllExistingRatedImagesToTemp(capturesFolderPath, sku)
+	tell application "Capture One"
+		-- Get all variants in the current document
+		set allVariants to (get variants of current document)
+		set variantsToRename to {}
+
+		-- Find all rated variants that are in the capture folder
+		repeat with currentVariant in allVariants
+			try
+				set variantPath to (get path of (get parent image of currentVariant))
+				set variantFolder to do shell script "dirname \"" & variantPath & "\""
+
+				-- Check if this variant is in the target capture folder
+				if variantFolder is capturesFolderPath then
+					set currentRating to (get rating of currentVariant)
+					-- If it's rated (1-5 stars), add it to the list
+					if currentRating is greater than or equal to 1 and currentRating is less than or equal to 5 then
+						set end of variantsToRename to currentVariant
+					end if
+				end if
+			end try
+		end repeat
+
+		-- If we found rated variants, rename them all to temporary names
+		if (count of variantsToRename) > 0 then
+			try
+				-- Set up batch rename with TEMP pattern
+				tell batch rename settings of current document
+					set method to text and tokens
+					set counter to 1
+					set token format to "[Image Folder Name]_TEMP_[1 Digit Counter]"
+				end tell
+
+				-- Rename all the variants at once
+				tell current document
+					batch rename variants variantsToRename
+				end tell
+
+				-- Give Capture One time to complete the rename
+				delay 1
+			on error errMsg
+				-- If rename fails, continue anyway
+			end try
+		end if
+	end tell
+end renameAllExistingRatedImagesToTemp
+
+
+-- ============================================================================
 -- MAIN SCRIPT EXECUTION - PART 1: VALIDATION AND SETUP
 -- ============================================================================
 
@@ -281,7 +342,10 @@ tell application "Capture One"
 		return
 	end try
 
-	-- Rename unrated images that would conflict with new naming BEFORE any other operations
+	-- Two-phase conflict resolution BEFORE any batch rename operations:
+	-- Phase 1: Move ALL existing rated images to temp names (clears target slots)
+	my renameAllExistingRatedImagesToTemp(capturesFolderPath, sku)
+	-- Phase 2: Rename any unrated images that would conflict with new naming
 	my renameUnstarredMatchingImages(capturesFolderPath, sku, ratedImagesCount)
 
 	-- Create output folder for export (ensure it exists)

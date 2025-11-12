@@ -2,6 +2,29 @@
 
 All notable changes to the Glassons Scripts will be documented in this file.
 
+## [2.0.4] - 2025-11-12
+
+### Fixed
+
+- Fixed " 1" appendage issue in all rename and export scripts when reordering rated images:
+  - Rename and Export Selects
+  - Rename and Export (Acc Model)
+  - Rename and Export (Clearcut)
+- Implemented two-phase rename strategy: existing rated images are moved to temporary names before batch renaming to prevent filename conflicts
+- Resolved conflicts between rated images competing for the same numbered slots (e.g., SKU_1, SKU_2, SKU_ACCMODEL, SKU_CLEARCUT)
+
+## [2.0.3] - 2025-11-12
+
+### Changed
+
+- Updated script headers and documentation for Rename and Export (Acc Model) and Rename and Export (Clearcut)
+
+## [2.0.2] - 2025-11-12
+
+### Changed
+
+- Internal release with script refinements
+
 ## [2.0.1] - 2025-11-12
 
 ### Added
