@@ -42,10 +42,10 @@ use scripting additions
 -- CONFIGURATION
 -- ============================================================================
 
-property exportOutputFolder : "/Users/jmorley/Pictures/Output"
+property exportOutputFolder : "/Volumes/ProductImages"
 -- The folder where exported JPG images will be saved
 
-property exportRecipeType : "full-size"
+property exportRecipeType : "web-size"
 -- Export recipe type: "full-size" or "web-size"
 -- - full-size: Original dimensions, higher quality
 -- - web-size: Smaller dimensions (2000 x 2537px), optimized for web
