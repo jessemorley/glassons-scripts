@@ -31,7 +31,7 @@ LAST UPDATED: November 2025
 property addToFavorites : true
 -- When true, adds the newly created folder to Capture One favorites
 
-property setCaptureFolder : true
+property setCaptureFolder : false
 -- When true, sets the newly created folder as the active capture location
 
 -- ============================================================================

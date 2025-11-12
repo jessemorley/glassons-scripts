@@ -44,6 +44,7 @@ use scripting additions
 
 property exportOutputFolder : "/Volumes/ProductImages"
 -- The folder where exported JPG images will be saved
+-- Default location: "/Volumes/ProductImages"
 
 property exportRecipeType : "web-size"
 -- Export recipe type: "full-size" or "web-size"
