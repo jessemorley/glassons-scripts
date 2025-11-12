@@ -49,14 +49,14 @@ jobs:
       - name: Create ZIP archive
         run: |
           cd applescripts
-          zip ../glassons-scripts.zip *.applescript
+          zip ../glassons-scripts-v${VERSION}.zip *.applescript
           cd ..
-          zip -u glassons-scripts.zip README.txt
+          zip -u glassons-scripts-v${VERSION}.zip README.txt
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: glassons-scripts.zip
+          files: glassons-scripts-v${{ env.VERSION }}.zip
           body_path: RELEASE_NOTES.md
           draft: false
           prerelease: false
