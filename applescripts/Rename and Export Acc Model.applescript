@@ -1,6 +1,6 @@
 (*
 ================================================================================
-GLASSONS RENAME AND EXPORT SELECTS SCRIPT
+GLASSONS RENAME AND EXPORT ACC MODEL SCRIPT
 ================================================================================
 
 DESCRIPTION:
@@ -9,29 +9,28 @@ folder. Images are exported at web-size (2000x2537px) or full-size (100%).
 Handles conflict resolution when re-running with different selections by renaming
 previously unrated images, ensuring clean exports without filename conflicts.
 
-RENAMING SEQUENCE:
-SKU_1, SKU_2, SKU_3, SKU_4, SKU_5, SKU_6, SKU_ADDITIONAL 1, SKU_ADDITIONAL 2,
-SKU_ADDITIONAL 3, SKU_ADDITIONAL 4
-
 WORKFLOW:
 1. Validate session (single document open, rated images exist)
 2. Identify capture folder and SKU from rated image location
 3. Rename conflicting unrated images with "_prev" suffix
 4. Configure export recipe (Glassons Ecomm) (full-size or web-size)
-5. Batch rename rated images to SKU_COUNTER format
+5. Batch rename rated images to SKU_ACCMODEL and SKU_3-5 format
 6. Export rated images as JPGs (overwrites existing files)
+
+RENAMING SEQUENCE:
+SKU_ACCMODEL, SKU_3, SKU_4, SKU_5
 
 ERROR HANDLING:
 - No images are rated
 - The ProductImages drive is not mounted
 - Multiple capture sessions are open
 - Target capture folder is not a subfolder of the session Capture folder
-- More than 10 images are selected
+- More than 4 images are selected
 
-RECOMMENDED SHORTCUT: Command + 6
+RECOMMENDED SHORTCUT: Command + 5
 
 AUTHOR: Jesse Morley
-LAST UPDATED: October 2025
+LAST UPDATED: November 2025
 ================================================================================
 *)
 
@@ -46,7 +45,7 @@ use scripting additions
 property exportOutputFolder : "/Users/jmorley/Pictures/Output"
 -- The folder where exported JPG images will be saved
 
-property exportRecipeType : "web-size"
+property exportRecipeType : "full-size"
 -- Export recipe type: "full-size" or "web-size"
 -- - full-size: Original dimensions, higher quality
 -- - web-size: Smaller dimensions (2000 x 2537px), optimized for web
@@ -68,8 +67,8 @@ end hasImageFiles
 -- ============================================================================
 (*
 Configures the export recipe based on the exportRecipeType property.
-- full-size: Original dimensions (Fixed 100%), no sharpening
-- web-size: Smaller dimensions (2000 x 2537px), no sharpening
+- full-size: Original dimensions (Fixed 100%), screen sharpening
+- web-size: Smaller dimensions (2000 x 2537px), screen sharpening
 *)
 on configureExportRecipe(recipeName)
 	tell application "Capture One"
@@ -95,8 +94,11 @@ on configureExportRecipe(recipeName)
 				set primary scaling value to 2000
 				set secondary scaling value to 2537
 			end if
-			-- Output sharpening (none for both types)
-			set sharpening to no output sharpening
+			-- Output sharpening for screen: Amount 60, Radius 0.6, Threshold 0
+			set sharpening to for screen
+			set sharpening amount to 60
+			set sharpening radius to 0.6
+			set sharpening threshold to 0
 		end tell
 	end tell
 end configureExportRecipe
@@ -114,10 +116,65 @@ on renameUnstarredMatchingImages(capturesFolderPath, sku, ratedImagesCount)
 	-- Check if image files exist
 	if not my hasImageFiles(capturesFolderPath) then return -- No image files found
 
-	-- Generate the expected new filenames that will be created
-	-- Check for files matching SKU_N with any extension (images 1-6)
-	repeat with i from 1 to 6
-		if i > ratedImagesCount then exit repeat
+	-- Check for files matching SKU_ACCMODEL with any extension
+	set expectedBasename to sku & "_ACCMODEL"
+	-- Find any file matching this basename with any extension
+	set matchingFiles to do shell script "find \"" & capturesFolderPath & "\" -maxdepth 1 -name \"" & expectedBasename & ".*\" | head -1 || true"
+
+	set fileExists to (matchingFiles is not "")
+
+	if fileExists then
+		-- Check if this file is currently rated (rating 1-5) in Capture One
+		set isRated to false
+		set targetVariant to null
+		try
+			tell application "Capture One"
+				set allVariants to (get variants of current document)
+				repeat with currentVariant in allVariants
+					set variantPath to (get path of (get parent image of currentVariant))
+					if variantPath is matchingFiles then
+						set currentRating to (get rating of currentVariant)
+						if currentRating is greater than or equal to 1 and currentRating is less than or equal to 5 then
+							set isRated to true
+							exit repeat
+						else
+							set targetVariant to currentVariant
+						end if
+					end if
+				end repeat
+			end tell
+		on error
+			-- If we can't check the rating, skip this file
+			set isRated to true
+		end try
+
+		-- If the file is NOT rated, rename it using Capture One's batch rename
+		if not isRated and targetVariant is not null then
+			try
+				tell application "Capture One"
+					-- Set up batch rename for this specific variant with _prev suffix
+					tell batch rename settings of current document
+						set method to text and tokens
+						set counter to 1
+						set token format to "[Image Folder Name]_[1 Digit Counter]_prev"
+					end tell
+
+					-- Rename just this one variant using Capture One's system
+					tell current document
+						batch rename variants {targetVariant}
+					end tell
+
+					-- Give Capture One a moment to complete the rename
+					delay 1
+				end tell
+			on error errMsg
+				-- If Capture One rename fails, log the error but continue
+			end try
+		end if
+	end if
+	
+	-- Check for files matching SKU_3, SKU_4, SKU_5 with any extension
+	repeat with i from 3 to 5
 		set expectedBasename to sku & "_" & i
 		-- Find any file matching this basename with any extension
 		set matchingFiles to do shell script "find \"" & capturesFolderPath & "\" -maxdepth 1 -name \"" & expectedBasename & ".*\" | head -1 || true"
@@ -174,68 +231,6 @@ on renameUnstarredMatchingImages(capturesFolderPath, sku, ratedImagesCount)
 			end if
 		end if
 	end repeat
-	
-	-- Check for files matching SKU_ADDITIONAL N with any extension (images 7-10)
-	if ratedImagesCount > 6 then
-		repeat with i from 1 to 4
-			if (i + 6) > ratedImagesCount then exit repeat
-			set expectedBasename to sku & "_ADDITIONAL " & i
-			-- Find any file matching this basename with any extension
-			set matchingFiles to do shell script "find \"" & capturesFolderPath & "\" -maxdepth 1 -name \"" & expectedBasename & ".*\" | head -1 || true"
-
-			set fileExists to (matchingFiles is not "")
-
-			if fileExists then
-				-- Check if this file is currently rated (rating 1-5) in Capture One
-				set isRated to false
-				set targetVariant to null
-				try
-					tell application "Capture One"
-						set allVariants to (get variants of current document)
-						repeat with currentVariant in allVariants
-							set variantPath to (get path of (get parent image of currentVariant))
-							if variantPath is matchingFiles then
-								set currentRating to (get rating of currentVariant)
-								if currentRating is greater than or equal to 1 and currentRating is less than or equal to 5 then
-									set isRated to true
-									exit repeat
-								else
-									set targetVariant to currentVariant
-								end if
-							end if
-						end repeat
-					end tell
-				on error
-					-- If we can't check the rating, skip this file
-					set isRated to true
-				end try
-
-				-- If the file is NOT rated, rename it using Capture One's batch rename
-				if not isRated and targetVariant is not null then
-					try
-						tell application "Capture One"
-							-- Set up batch rename for this specific variant with _prev suffix
-							tell batch rename settings of current document
-								set method to text and tokens
-								set counter to 1
-								set token format to "[Image Folder Name]_[1 Digit Counter]_prev"
-							end tell
-
-							-- Rename just this one variant using Capture One's system
-							tell current document
-								batch rename variants {targetVariant}
-							end tell
-
-							-- Give Capture One a moment to complete the rename
-							delay 1
-						end tell
-					on error errMsg
-						-- If Capture One rename fails, log the error but continue
-					end try
-				end if
-			end if
-		end repeat
-	end if
 end renameUnstarredMatchingImages
 
 
@@ -265,8 +260,8 @@ tell application "Capture One"
 	set sku to do shell script ("basename '" & capturesFolderPath & "'")
 	set ratedImagesCount to count (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 
-	-- Validate image count (max 10 images)
-	if ratedImagesCount > 10 then
+	-- Validate image count (max 4 images)
+	if ratedImagesCount > 4 then
 		display alert "Export Failure" message ((ratedImagesCount as string) & " Images selected. Select fewer images and export again.")
 		return
 	end if
@@ -321,43 +316,75 @@ tell application "Capture One"
 	-- Get all rated variants
 	set allRatedVariants to (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 	
-	-- Split variants into two groups: first 6, and next 4 (7-10)
-	set firstSixVariants to {}
-	set additionalVariants to {}
+	-- Split variants into groups: first image (ACCMODEL), and images 2-4 (SKU_3, SKU_4, SKU_5)
+	set firstVariant to {}
+	set secondVariant to {}
+	set thirdVariant to {}
+	set fourthVariant to {}
 	set variantIndex to 1
 	
 	repeat with currentVariant in allRatedVariants
-		if variantIndex ² 6 then
-			set end of firstSixVariants to currentVariant
-		else if variantIndex ² 10 then
-			set end of additionalVariants to currentVariant
+		if variantIndex = 1 then
+			set end of firstVariant to currentVariant
+		else if variantIndex = 2 then
+			set end of secondVariant to currentVariant
+		else if variantIndex = 3 then
+			set end of thirdVariant to currentVariant
+		else if variantIndex = 4 then
+			set end of fourthVariant to currentVariant
 		end if
 		set variantIndex to variantIndex + 1
 	end repeat
 	
-	-- Rename first 6 images: SKU_1 through SKU_6
-	if (count of firstSixVariants) > 0 then
+	-- Rename first image: SKU_ACCMODEL
+	if (count of firstVariant) > 0 then
 		tell batch rename settings of current document
 			set method to text and tokens
 			set counter to 1
+			set token format to "[Image Folder Name]_ACCMODEL"
+		end tell
+		
+		tell current document
+			batch rename variants firstVariant
+		end tell
+	end if
+	
+	-- Rename second image: SKU_3
+	if (count of secondVariant) > 0 then
+		tell batch rename settings of current document
+			set method to text and tokens
+			set counter to 3
 			set token format to "[Image Folder Name]_[1 Digit Counter]"
 		end tell
 		
 		tell current document
-			batch rename variants firstSixVariants
+			batch rename variants secondVariant
 		end tell
 	end if
 	
-	-- Rename images 7-10: SKU_ADDITIONAL 1 through SKU_ADDITIONAL 4
-	if (count of additionalVariants) > 0 then
+	-- Rename third image: SKU_4
+	if (count of thirdVariant) > 0 then
 		tell batch rename settings of current document
 			set method to text and tokens
-			set counter to 1
-			set token format to "[Image Folder Name]_ADDITIONAL [1 Digit Counter]"
+			set counter to 4
+			set token format to "[Image Folder Name]_[1 Digit Counter]"
 		end tell
 		
 		tell current document
-			batch rename variants additionalVariants
+			batch rename variants thirdVariant
+		end tell
+	end if
+	
+	-- Rename fourth image: SKU_5
+	if (count of fourthVariant) > 0 then
+		tell batch rename settings of current document
+			set method to text and tokens
+			set counter to 5
+			set token format to "[Image Folder Name]_[1 Digit Counter]"
+		end tell
+		
+		tell current document
+			batch rename variants fourthVariant
 		end tell
 	end if
 
@@ -365,13 +392,13 @@ tell application "Capture One"
 	if not my hasImageFiles(capturesFolderPath) then return
 
 	-- Wait for batch rename to complete
-	-- Matches any file with pattern SKU_N.* or SKU_ADDITIONAL N.* (any extension)
+	-- Matches any file with pattern SKU_ACCMODEL.* or SKU_3.*, SKU_4.*, SKU_5.* (any extension)
 	set setWaitForRenameScript to "/bin/bash -s <<'EOF'
 	waitCount=0
 	renamedImagesCount=0
 	while	[[ ${renamedImagesCount} -ne " & ratedImagesCount & "  ]] && [[ ${waitCount} -lt 1 ]]
 	do
-		renamedImagesCount=$(find \"" & capturesFolderPath & "\" -maxdepth 1 | grep -E \"/[A-Z0-9]+_([0-9]+|ADDITIONAL [0-9]+)(_M)?\\.[^.]+$\" | wc -l | bc)
+		renamedImagesCount=$(find \"" & capturesFolderPath & "\" -maxdepth 1 | grep -E \"/[A-Z0-9]+_(ACCMODEL|[345])(_M)?\\.[^.]+$\" | wc -l | bc)
 		((waitCount++))
 		sleep 1
 	done
@@ -390,3 +417,4 @@ end tell
 END OF SCRIPT
 ================================================================================
 *)
+

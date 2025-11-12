@@ -2,6 +2,17 @@
 
 All notable changes to the Glassons Scripts will be documented in this file.
 
+## [2.0.1] - 2025-11-12
+
+### Added
+
+- Added "Rename and Export Acc Model" script (⌘ 5) with renaming sequence: SKU_ACCMODEL, SKU_3, SKU_4, SKU_5
+- Added "Rename and Export Clearcut" script (⌘ 7) with renaming sequence: SKU_ACCMODEL, SKU_3, SKU_4, SKU_5
+
+### Removed
+
+- Removed `install.command` from repository and release packages
+
 ## [1.3.0] - 2025-11-02
 
 ### Added

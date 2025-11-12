@@ -20,11 +20,14 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           awk '/^## \['$VERSION'\]/,/^## \[/ {if (/^## \[/ && !/\['$VERSION'\]/) exit; if (!/^## \['$VERSION'\]/) print}' CHANGELOG.md > RELEASE_NOTES.md
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Generate README.txt
+        env:
+          VERSION: ${{ env.VERSION }}
         run: |
-          cat > README.txt << 'EOF'
-          GLASSONS CAPTURE ONE SCRIPTS v1.2.0
+          cat > README.txt << EOF
+          GLASSONS CAPTURE ONE SCRIPTS v${VERSION}
           ================================================================================
 
           INSTALLATION

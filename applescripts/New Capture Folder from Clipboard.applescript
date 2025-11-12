@@ -5,16 +5,17 @@ GLASSONS NEW CAPTURE FOLDER FROM CLIPBOARD
 
 DESCRIPTION:
 Creates a new capture folder in Capture One using text from the clipboard.
-Replaces the first space/tab with an underscore, adds to favourites, sets as
-active capture location, and resets the counter.
+Replaces the first space/tab with an underscore, optionally adds to favourites,
+optionally sets as active capture location, and resets the counter.
 
 WORKFLOW:
 1. Read folder name from clipboard
-2. Process the name (replace first whitespace with underscore)
+2. Process the name (replace first whitespace with underscore; tabs with spaces)
 3. Create folder in Capture One's capture directory
-4. Add folder to Capture One favourites
-5. Set as active capture location
+4. Optionally add folder to Capture One favourites (configurable)
+5. Optionally set as active capture location (configurable)
 6. Reset capture counter
+7. Copy folderName to clipboard with "_7" for video file renaming
 
 RECOMMENDED SHORTCUT: Command + 0
 
@@ -26,6 +27,9 @@ LAST UPDATED: October 2025
 -- ============================================================================
 -- CONFIGURATION SETTINGS
 -- ============================================================================
+
+property addToFavorites : true
+-- When true, adds the newly created folder to Capture One favorites
 
 property setCaptureFolder : true
 -- When true, sets the newly created folder as the active capture location
@@ -61,6 +65,9 @@ try
 		if not foundWhitespace and (currentChar is " " or currentChar is tab) then
 			set processedName to processedName & "_"
 			set foundWhitespace to true
+		else if foundWhitespace and currentChar is tab then
+			-- Replace tabs after the first whitespace with spaces
+			set processedName to processedName & " "
 		else
 			set processedName to processedName & currentChar
 		end if
@@ -76,7 +83,15 @@ end try
 -- Create new folder (and set as Capture Folder if enabled)
 set newDir to createNewFolderInCapture(folderName)
 if newDir is not "" then
-	addToFavoritesAndSetCapture(newDir, setCaptureFolder)
+	addToFavoritesAndSetCapture(newDir, addToFavorites, setCaptureFolder)
+	
+	-- Copy the processed folder name plus "_7" to clipboard for the video file
+	try
+		set the clipboard to folderName & "_7"
+		log "Copied to clipboard: " & folderName & "_7"
+	on error errMsg number errNum
+		display dialog "Error copying video string to clipboard: " & errMsg & " (" & errNum & ")" buttons {"OK"} default button "OK"
+	end try
 end if
 
 
@@ -224,24 +239,26 @@ end createNewFolderInCapture
 -- FUNCTION: Add to Favorites and Configure Capture Settings
 -- ============================================================================
 
--- Adds the folder path to Capture One favorites
+-- Optionally adds the folder path to Capture One favorites
 -- Optionally setting the path as the active capture location
 -- Resets the capture counter to 0
 
-on addToFavoritesAndSetCapture(dirPath, setCapture)
+on addToFavoritesAndSetCapture(dirPath, addToFav, setCapture)
 	try
 		log "Starting addToFavoritesAndSetCapture"
 		
 		tell front document of application "Capture One"
 			
-			-- Add folder to Capture One favorites
-			try
-				make collection with properties {kind:favorite, file:dirPath}
-				log "Added to favorites: " & dirPath
-			on error errMsg number errNum
-				display dialog "Error adding to favorites: " & errMsg & " (" & errNum & ")" buttons {"OK"} default button "OK"
-				return
-			end try
+			-- Add folder to Capture One favorites (if requested)
+			if addToFav is true then
+				try
+					make collection with properties {kind:favorite, file:dirPath}
+					log "Added to favorites: " & dirPath
+				on error errMsg number errNum
+					display dialog "Error adding to favorites: " & errMsg & " (" & errNum & ")" buttons {"OK"} default button "OK"
+					return
+				end try
+			end if
 			
 			-- Set as active capture folder (if requested)
 			if setCapture is true then
