@@ -4,10 +4,11 @@ GLASSONS RENAME AND EXPORT CLEARCUT SCRIPT
 ================================================================================
 
 DESCRIPTION:
-Renames and exports rated images from Capture One to a user-defined local output
-folder. Images are exported at web-size (2000x2537px) or full-size (100%).
-Handles conflict resolution when re-running with different selections by renaming
-previously unrated images, ensuring clean exports without filename conflicts.
+Renames and exports rated images to the session's default Output folder (usually
+/Session Name/Output). Images are exported at web-size (2000x2537px) or full-size
+(100%). Handles conflict resolution when re-running with different selections by
+renaming previously unrated images, ensuring clean exports without filename
+conflicts.
 
 RENAMING LOGIC:
 SKU_CLEARCUT, SKU_CLEARCUT2
@@ -15,22 +16,24 @@ SKU_CLEARCUT, SKU_CLEARCUT2
 WORKFLOW:
 1. Validate session (single document open, rated images exist)
 2. Identify capture folder and SKU from rated image location
-3. Rename conflicting unrated images with "_prev" suffix
-4. Configure export recipe (Glassons Ecomm) (full-size or web-size)
-5. Batch rename rated images to SKU_CLEARCUT format
-6. Export rated images as JPGs (overwrites existing files)
+3. Use session's default Output folder (/Session/Output) for exports
+4. Rename conflicting unrated images with "_prev" suffix
+5. Configure export recipe (Glassons Ecomm) (full-size or web-size)
+6. Batch rename rated images to SKU_CLEARCUT format
+7. Export rated images as JPGs to Output folder (overwrites existing files)
 
 ERROR HANDLING:
 - No images are rated
-- The ProductImages drive is not mounted
+- The session Output folder is not accessible
 - Multiple capture sessions are open
 - Target capture folder is not a subfolder of the session Capture folder
 - More than 2 images are selected
+- No RAW files are detected
 
 RECOMMENDED SHORTCUT: Command + 7
 
 AUTHOR: Jesse Morley
-LAST UPDATED: November 2025
+LAST UPDATED: November 29, 2025
 ================================================================================
 *)
 
@@ -41,10 +44,6 @@ use scripting additions
 -- ============================================================================
 -- CONFIGURATION
 -- ============================================================================
-
-property exportOutputFolder : "/Volumes/ProductImages"
--- The folder where exported JPG images will be saved
--- Default location: "/Volumes/ProductImages"
 
 property exportRecipeType : "full-size"
 -- Export recipe type: "full-size" or "web-size"
@@ -68,6 +67,7 @@ end hasImageFiles
 -- ============================================================================
 (*
 Configures the export recipe based on the exportRecipeType property.
+Exports to Capture One's default output location (session Output folder).
 - full-size: Original dimensions (Fixed 100%), screen sharpening
 - web-size: Smaller dimensions (2000 x 2537px), screen sharpening
 *)
@@ -75,8 +75,7 @@ on configureExportRecipe(recipeName)
 	tell application "Capture One"
 		tell recipe recipeName of front document
 			set enabled to true
-			set root folder type to custom location
-			set root folder location to POSIX file exportOutputFolder
+			set root folder type to output location
 			set output format to JPEG
 			set JPEG quality to 95
 			set color profile to "sRGB Color Space Profile"
@@ -255,7 +254,7 @@ tell application "Capture One"
 	-- Get capture folder path and SKU from first rated image
 	set selectedVariant to the path of (get parent image of (get item 1 of ratedVariants))
 	set capturesFolderPath to (do shell script "dirname \"" & selectedVariant & "\"")
-	set outputFolderPath to exportOutputFolder
+	set outputFolderPath to capturesFolderPath
 	set sku to do shell script ("basename '" & capturesFolderPath & "'")
 	set ratedImagesCount to count (get variants whose rating is greater than or equal to 1 and rating is less than or equal to 5)
 
@@ -271,11 +270,17 @@ tell application "Capture One"
 		return
 	end if
 
+	-- Validate that folder contains RAW images (not just JPGs)
+	if not my hasImageFiles(capturesFolderPath) then
+		display alert "Export Failure" message "No RAW images found in the selected folder."
+		return
+	end if
+
 	-- Validate that export output folder/volume is accessible
 	try
 		do shell script "test -d \"" & outputFolderPath & "\""
 	on error
-		display alert "Export Failure" message "Export destination not found:" & return & outputFolderPath & return & return & "Please ensure the volume is mounted."
+		display alert "Export Failure" message "Export destination not found:" & return & outputFolderPath & return & return & "Please ensure the session Output folder exists and is accessible."
 		return
 	end try
 
@@ -384,4 +389,3 @@ end tell
 END OF SCRIPT
 ================================================================================
 *)
-
