@@ -8,7 +8,7 @@ Renaming sequence: `SKU_1, SKU_2, SKU_3, SKU_4, SKU_5, SKU_6, SKU_ADDITIONAL 1, 
 
 ### Rename and Export Clearcut (⌘ 7)
 
-Renaming sequence: `SKU_CLEARCUT, SKU_CLEARCUT2`
+Exports to default session Output folder. Max 2 selects. Renaming sequence: `SKU_CLEARCUT, SKU_CLEARCUT2`
 
 ### Rename and Export Acc Model (⌘ 8)
 
